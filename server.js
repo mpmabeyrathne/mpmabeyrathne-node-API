@@ -35,6 +35,38 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
+app.put("/products/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `cant find product with this ${id}` });
+    }
+
+    const updateProduct = await Product.findById(id);
+    res.status(200).json(updateProduct);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/products/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndDelete(id, req.body);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `cant find product with this ${id}` });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 app.post("/products", async (req, res) => {
   try {
     const product = await Product.create(req.body);
